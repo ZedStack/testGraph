@@ -7,11 +7,7 @@ Badge [] locoM5Badge;
 Badge [] pumpBadge;
 Link  [] link;
 
-// Link myLink1;
-// Link myLink2;
-// Link myLink3;
-// Link myLink4;
-// Link myLink5;
+PFont fontRoboto;
 
 color backgroundColor;
 int linksAmount;
@@ -38,100 +34,37 @@ int [] badgeAmount = {
     4  // Water pumps
 };
 
+int getWidth (int sector) {
+    return (width / 16) * sector;
+}
+int getHeight (int sector) {
+    return (height / 8) * sector;
+}
+
 // TODO: Simplify both pls
 void setBadgeCoords () {
-    tankBadge [0].newCoords (
-        width / 8,
-        (height / 8) * 3
-    );
-    tankBadge [1].newCoords (
-        (width / 8) * 7,
-        (height / 8) * 3
-    );
-
-    sensorBadge [0].newCoords (
-        (width / 16) * 3,
-        (height / 8) * 5
-    );
-    sensorBadge [1].newCoords (
-        width / 16,
-        height / 4
-    );
-    sensorBadge [2].newCoords (
-        width / 8,
-        height / 4
-    );
-    sensorBadge [3].newCoords (
-        (width / 16) * 15,
-        height / 4
-    );
-    sensorBadge [4].newCoords (
-        (width / 16) * 14,
-        height / 4
-    );
-    sensorBadge [5].newCoords (
-        (width / 16) * 13,
-        (height / 8) * 5
-    );
-
-    arduinoBadge [0].newCoords (
-        (width / 16) * 3,
-        (height / 4) * 3
-    );
-    arduinoBadge [1].newCoords (
-        width / 8,
-        height / 8
-    );
-    arduinoBadge [2].newCoords (
-        (width / 8) * 7,
-        height / 8
-    );
-    arduinoBadge [3].newCoords (
-        (width / 16) * 13,
-        (height / 4) * 3
-    );
-
-    pumpBadge [0].newCoords (
-        width / 8,
-        (height / 4) * 3
-    );
-    pumpBadge [1].newCoords (
-        (width / 16) * 3,
-        height / 4
-    );
-    pumpBadge [2].newCoords (
-        (width / 16) * 13,
-        height / 4
-    );
-    pumpBadge [3].newCoords (
-        (width / 16) * 14,
-        (height / 4) * 3
-    );
-
-    locoM5Badge [0].newCoords (
-        (width / 16) * 5,
-        (height / 4) * 3
-    );
-    locoM5Badge [1].newCoords (
-        (width / 16) * 5,
-        height / 4
-    );
-    locoM5Badge [2].newCoords (
-        (width / 8) * 3,
-        height / 8
-    );
-    locoM5Badge [3].newCoords (
-        (width / 8) * 5,
-        height / 8
-    );
-    locoM5Badge [4].newCoords (
-        (width / 16) * 11,
-        height / 4
-    );
-    locoM5Badge [5].newCoords (
-        (width / 16) * 11,
-        (height / 4) * 3
-    );
+    tankBadge    [0].newGridCoords (2, 3);
+    tankBadge    [1].newGridCoords (14, 3);
+    sensorBadge  [0].newGridCoords (3, 5);
+    sensorBadge  [1].newGridCoords (1, 2);
+    sensorBadge  [2].newGridCoords (2, 2);
+    sensorBadge  [3].newGridCoords (15, 2);
+    sensorBadge  [4].newGridCoords (14, 2);
+    sensorBadge  [5].newGridCoords (13, 5);
+    arduinoBadge [0].newGridCoords (3, 6);
+    arduinoBadge [1].newGridCoords (2, 1);
+    arduinoBadge [2].newGridCoords (14, 1);
+    arduinoBadge [3].newGridCoords (13, 6);
+    pumpBadge    [0].newGridCoords (2, 6);
+    pumpBadge    [1].newGridCoords (3, 2);
+    pumpBadge    [2].newGridCoords (13, 2);
+    pumpBadge    [3].newGridCoords (14, 6);
+    locoM5Badge  [0].newGridCoords (5, 6);
+    locoM5Badge  [1].newGridCoords (5, 2);
+    locoM5Badge  [2].newGridCoords (6, 1);
+    locoM5Badge  [3].newGridCoords (10, 1);
+    locoM5Badge  [4].newGridCoords (11, 2);
+    locoM5Badge  [5].newGridCoords (11, 6);
 }
 void setLinkCoords () {
     link [0]  = new Link (locoM5Badge [0], locoM5Badge  [1]);
@@ -162,7 +95,6 @@ void setLinkCoords () {
     link [25] = new Link (sensorBadge [3], tankBadge    [1]);
     link [26] = new Link (sensorBadge [4], tankBadge    [1]);
 }
-
 void renderBadges () {
     for (int i = 0; i < max (badgeAmount); i++) {
         if (i < badgeAmount [0]) tankBadge    [i].render ();
@@ -173,23 +105,44 @@ void renderBadges () {
     }
 }
 void renderLinks () {
+    // boolean renderNow = true;
+    //
+    // for (int i = 0; i < linksAmount; i++) {
+    //     if (link [i].check ()) {
+    //         renderNow = false;
+    //         break;
+    //     }
+    // }
+    //
+    // if (renderNow)
     for (int i = 0; i < linksAmount; i++) link [i].render ();
 }
+
+void clearScreen () {
+    noStroke ();
+    fill (backgroundColor);
+    rect (0, 0, width, height);
+}
 void render () {
+    clearScreen ();
+
     renderLinks  ();
     renderBadges ();
 }
 
 void setup () {
-    backgroundColor = color (33, 33, 30);
+    backgroundColor = color      (33, 33, 30);
     linksAmount     = 27;
+    fontRoboto      = createFont ("Roboto mono", 17);
 
     size        (1024, 576);
     // fullScreen ();
     background  (backgroundColor);
     ellipseMode (CENTER);
+    rectMode    (CORNERS);
     textAlign   (CENTER, CENTER);
-    frameRate (30);
+    frameRate   (30);
+    textFont    (fontRoboto);
     // noStroke ();
 
     tankBadge    = new Badge [badgeAmount [0]]; // Four water tanks
@@ -202,21 +155,58 @@ void setup () {
 
     // TODO: Make all in 1 for loop
     for (int i = 0; i < max (badgeAmount); i++) {
-        if (i < badgeAmount [0]) tankBadge    [i] = new Badge (0);
-        if (i < badgeAmount [1]) sensorBadge  [i] = new Badge (1);
-        if (i < badgeAmount [2]) arduinoBadge [i] = new Badge (2);
-        if (i < badgeAmount [3]) locoM5Badge  [i] = new Badge (3);
-        if (i < badgeAmount [4]) pumpBadge    [i] = new Badge (4);
+        if (i < badgeAmount [0]) tankBadge    [i] = new Badge (0, "Tank " + i);
+        if (i < badgeAmount [1]) sensorBadge  [i] = new Badge (1, "Sensor " + i);
+        if (i < badgeAmount [2]) arduinoBadge [i] = new Badge (2, "Arduino " + i);
+        if (i < badgeAmount [3]) locoM5Badge  [i] = new Badge (3, "LocoM5 " + i);
+        if (i < badgeAmount [4]) pumpBadge    [i] = new Badge (4, "Water pump " + i);
     }
 
     setBadgeCoords ();
     renderBadges ();
     setLinkCoords ();
-
-    // It will be added to the 'draw' function later
-    render ();
 }
 
 void draw () {
-    // render ();
+    render ();
 }
+
+// void toggleBadgeSelectForAll (Badge exception, boolean value) {
+//     for (int i = 0; i < max (badgeAmount); i++) {
+//         if (i < badgeAmount [0] && tankBadge    [i] != exception) { tankBadge    [i].toggleBadgeSelect (); }
+//         if (i < badgeAmount [1] && sensorBadge  [i] != exception) { sensorBadge  [i].toggleBadgeSelect (); }
+//         if (i < badgeAmount [2] && arduinoBadge [i] != exception) { arduinoBadge [i].toggleBadgeSelect (); }
+//         if (i < badgeAmount [3] && locoM5Badge  [i] != exception) { locoM5Badge  [i].toggleBadgeSelect (); }
+//         if (i < badgeAmount [4] && pumpBadge    [i] != exception) { pumpBadge    [i].toggleBadgeSelect (); }
+//     }
+// }
+
+void mousePressed () {
+    for (int i = 0; i < max (badgeAmount); i++) {
+        if (i < badgeAmount [0] && tankBadge    [i].mouseOver ()) { tankBadge    [i].toggleBadgeSelect (); }
+        if (i < badgeAmount [1] && sensorBadge  [i].mouseOver ()) { sensorBadge  [i].toggleBadgeSelect (); }
+        if (i < badgeAmount [2] && arduinoBadge [i].mouseOver ()) { arduinoBadge [i].toggleBadgeSelect (); }
+        if (i < badgeAmount [3] && locoM5Badge  [i].mouseOver ()) { locoM5Badge  [i].toggleBadgeSelect (); }
+        if (i < badgeAmount [4] && pumpBadge    [i].mouseOver ()) { pumpBadge    [i].toggleBadgeSelect (); }
+    }
+}
+// void keyPressed () {
+//     boolean toggleNow = false;
+//
+//     for (int i = 0; i < max (badgeAmount); i++) {
+//         if (i < badgeAmount [0] && tankBadge    [i].toggled) { toggleNow = true; break; }
+//         if (i < badgeAmount [1] && sensorBadge  [i].toggled) { toggleNow = true; break; }
+//         if (i < badgeAmount [2] && arduinoBadge [i].toggled) { toggleNow = true; break; }
+//         if (i < badgeAmount [3] && locoM5Badge  [i].toggled) { toggleNow = true; break; }
+//         if (i < badgeAmount [4] && pumpBadge    [i].toggled) { toggleNow = true; break; }
+//     }
+//
+//     if (toggleNow && key == 'a')
+//     for (int i = 0; i < max (badgeAmount); i++) {
+//         if (i < badgeAmount [0]) tankBadge    [i].toggleBadgeRender (false);
+//         if (i < badgeAmount [1]) sensorBadge  [i].toggleBadgeRender (false);
+//         if (i < badgeAmount [2]) arduinoBadge [i].toggleBadgeRender (false);
+//         if (i < badgeAmount [3]) locoM5Badge  [i].toggleBadgeRender (false);
+//         if (i < badgeAmount [4]) pumpBadge    [i].toggleBadgeRender (false);
+//     }
+// }

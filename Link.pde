@@ -7,10 +7,14 @@ public  class Link {
     private int         _arcOffset; // This is a diameter, not a radius
     private int         _sector;
     private boolean     _oneLine;
+    private Badge _badgeFrom;
+    private Badge _badgeTo;
 
     private void _setFromToCoords (Badge badgeFrom, Badge badgeTo) {
-        _from = new CoordSystem (badgeFrom.coord.xAxis, badgeFrom.coord.yAxis);
-        _to = new CoordSystem (badgeTo.coord.xAxis, badgeTo.coord.yAxis);
+        _badgeFrom = badgeFrom;
+        _badgeTo = badgeTo;
+        _from = new CoordSystem (_badgeFrom.coord.xAxis, _badgeFrom.coord.yAxis);
+        _to = new CoordSystem (_badgeTo.coord.xAxis, _badgeTo.coord.yAxis);
 
         if (_from.xAxis == _to.xAxis || _from.yAxis == _to.yAxis) _oneLine = true;
         else _oneLine = false;
@@ -137,6 +141,10 @@ public  class Link {
         // Is this really necesary?
     }
 
+    public boolean check () {
+        return !_badgeFrom.toggled && !_badgeTo.toggled;
+    }
+
     public Link (Badge badgeFrom, Badge badgeTo) {
         _arcOffset = 40; // in px
 
@@ -157,7 +165,6 @@ public  class Link {
         // Draw
         // TODO: Change link color by status
         stroke (250); // Color
-
         _arrow ();
         // Draw
     }
